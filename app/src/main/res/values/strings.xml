@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">GitHubAPIDemo</string>
+
+    <string name="label_repository_list_fragment">Repositories</string>
+    <string name="label_issue_list_fragment">Issues</string>
+    <string name="label_settings_fragment">Settings</string>
+
+    <string name="settings">Settings</string>
+
+    <string name="preference_user_key">user</string>
+    <string name="preference_user_title">GitHub Username</string>
+
+    <string name="default_user">google</string>
+
+    <string name="dialog_header_state_filter">Filter issues</string>
+    <string name="error">Error</string>
+    <string name="unknown">Unknown</string>
+    <string name="hint_repository_search">Repository name</string>
+    <string name="reset">Reset</string>
+</resources>

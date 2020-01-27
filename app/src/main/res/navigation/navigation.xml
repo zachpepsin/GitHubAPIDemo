@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/repositoryListFragment">
+
+    <fragment
+        android:id="@+id/repositoryListFragment"
+        android:name="com.zachpepsin.githubapidemo.repositorylist.RepositoryListFragment"
+        android:label="@string/label_repository_list_fragment"
+        tools:layout="@layout/fragment_repository_list">
+        <action
+            android:id="@+id/action_repositoryListFragment_to_issueListFragment"
+            app:destination="@id/issueListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/issueListFragment"
+        android:name="com.zachpepsin.githubapidemo.issuelist.IssueListFragment"
+        android:label="@string/label_issue_list_fragment"
+        tools:layout="@layout/fragment_issue_list">
+        <argument
+            android:name="user"
+            app:argType="string" />
+        <argument
+            android:name="repository"
+            app:argType="com.zachpepsin.githubapidemo.network.Repository" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.zachpepsin.githubapidemo.SettingsFragment"
+        android:label="@string/label_settings_fragment"
+        tools:layout="@xml/preferences" />
+</navigation>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.zachpepsin.githubapidemo.network.IssueState" />
+
+        <import type="androidx.core.content.ContextCompat" />
+
+        <variable
+            name="issue"
+            type="com.zachpepsin.githubapidemo.network.Issue" />
+
+        <variable
+            name="onClickListener"
+            type="com.zachpepsin.githubapidemo.issuelist.IssueItemListener" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:onClick="@{() -> onClickListener.onClick(issue)}"
+        android:paddingStart="16dp"
+        android:paddingTop="5dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="5dp">
+
+        <TextView
+            android:id="@+id/text_issue_number"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:gravity="center_vertical|start"
+            android:lines="1"
+            android:singleLine="true"
+            android:text="@{issue.number}"
+            android:textAppearance="?attr/textAppearanceListItemSmall"
+            android:textStyle="bold"
+            app:issueState="@{issue.state}"
+            app:layout_constraintHeight_percent="0.3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.3"
+            tools:text="00" />
+
+        <TextView
+            android:id="@+id/text_issue_created_at"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:gravity="center_vertical|end"
+            android:lines="1"
+            android:singleLine="true"
+            android:textAppearance="?attr/textAppearanceListItemSecondary"
+            app:date="@{issue.created_at}"
+            app:layout_constraintBottom_toBottomOf="@id/text_issue_number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/text_issue_number"
+            app:layout_constraintTop_toTopOf="@id/text_issue_number"
+            tools:text="31 December 1234" />
+
+        <TextView
+            android:id="@+id/text_issue_title"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:ellipsize="end"
+            android:lines="2"
+            android:text="@{issue.title}"
+            android:textAppearance="?attr/textAppearanceListItem"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/text_issue_created_at"
+            app:layout_constraintStart_toStartOf="@id/text_issue_number"
+            app:layout_constraintTop_toBottomOf="@id/text_issue_number"
+            tools:text="Issue Name" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

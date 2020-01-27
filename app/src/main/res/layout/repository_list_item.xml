@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="repository"
+            type="com.zachpepsin.githubapidemo.network.Repository" />
+
+        <variable
+            name="onClickListener"
+            type="com.zachpepsin.githubapidemo.repositorylist.RepositoryItemListener" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:onClick="@{() -> onClickListener.onClick(repository)}"
+        android:paddingStart="16dp"
+        android:paddingTop="5dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="5dp">
+
+        <TextView
+            android:id="@+id/text_repository_title"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:ellipsize="end"
+            android:lines="1"
+            android:text="@{repository.name}"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent=".5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Repository Name" />
+
+        <TextView
+            android:id="@+id/text_repository_description"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:ellipsize="end"
+            android:lines="2"
+            android:text="@{repository.description}"
+            android:textAppearance="?attr/textAppearanceListItemSecondary"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent=".5"
+            app:layout_constraintStart_toStartOf="@id/text_repository_title"
+            app:layout_constraintTop_toBottomOf="@+id/text_repository_title"
+            tools:text="Repository Description" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
