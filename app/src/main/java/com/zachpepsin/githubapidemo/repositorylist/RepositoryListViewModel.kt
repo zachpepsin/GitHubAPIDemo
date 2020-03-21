@@ -3,10 +3,12 @@ package com.zachpepsin.githubapidemo.repositorylist
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
+import androidx.paging.LivePagingData
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.zachpepsin.githubapidemo.network.Repository
 import com.zachpepsin.githubapidemo.network.RepositoryApi
+import kotlinx.coroutines.Dispatchers
 
 enum class RepositoryApiStatus { LOADING, ERROR, DONE }
 
@@ -28,10 +30,10 @@ class RepositoryListViewModel(
 
     // Internally, we use a MutableLiveData, because we will be updating the List of Repository
     // with new values  Use a PagedList of repositories to handle pagination.
-    private val _repositories: LiveData<PagedList<Repository>>
+    private val _repositories: LiveData<PagingData<Repository>>
 
     // The external LiveData interface to the repository is immutable, so only this class can modify
-    val repositories: LiveData<PagedList<Repository>>
+    val repositories: LiveData<PagingData<Repository>>
         get() = _repositories
 
     // Internally, we use a MutableLiveData to handle navigation to the selected repository
@@ -56,10 +58,10 @@ class RepositoryListViewModel(
      * Call getRepositories() on init so we can display status immediately.
      */
     init {
-        val config = PagedList.Config.Builder()
-            .setPageSize(30) // The number of items to load per page
-            .setEnablePlaceholders(false)
-            .build()
+        val config = PagingConfig(
+            pageSize = 30,  // The number of items to load per page
+            enablePlaceholders = false
+        )
 
         repositoryDataSource = RepositoryDataSourceFactory(
             service = RepositoryApi.retrofitService,
@@ -67,10 +69,11 @@ class RepositoryListViewModel(
             query = null // Do not perform a search on first load
         )
 
-        val initializedPagedListBuilder =
-            LivePagedListBuilder<Int, Repository>(repositoryDataSource, config)
-
-        _repositories = initializedPagedListBuilder.build()
+        _repositories = LivePagingData(
+            config,
+            null,
+            repositoryDataSource.asPagingSourceFactory(Dispatchers.IO)
+        )
     }
 
     /**
