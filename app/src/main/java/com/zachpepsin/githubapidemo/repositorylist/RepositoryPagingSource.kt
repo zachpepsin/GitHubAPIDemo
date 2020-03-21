@@ -3,24 +3,57 @@ package com.zachpepsin.githubapidemo.repositorylist
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.paging.PageKeyedDataSource
+import androidx.paging.PagingSource
 import com.zachpepsin.githubapidemo.network.Repository
 import com.zachpepsin.githubapidemo.network.RepositoryApiService
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
 
-class RepositoryDataSource(
-    private val scope: CoroutineScope,
+class RepositoryPagingSource(
     private val service: RepositoryApiService,
     private val user: String,
     private val query: String?
-) : PageKeyedDataSource<Int, Repository>() {
+) : PagingSource<Int, Repository>() {
 
-    private var supervisorJob = SupervisorJob()
     private val networkState = MutableLiveData<RepositoryApiStatus>()
 
     // Keep reference of the last query (so we can retry in case one fails)
     private var retryQuery: (() -> Any)? = null
 
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Repository> {
+        return try {
+            val position = params.key ?: 0
+
+            val items = if (query.isNullOrBlank()) {
+                // We are not performing a search
+                service.getRepositories(
+                    user = user,
+                    page = position,
+                    per_page = params.pageSize
+                )
+            } else {
+                // We are performing a search
+                service.getRepositoriesQuery(
+                    query = "$query+user:$user",
+                    page = position,
+                    per_page = params.pageSize
+                ).items
+            }
+
+            networkState.postValue(RepositoryApiStatus.DONE)
+
+            LoadResult.Page(
+                data = items,
+                prevKey = position,
+                nextKey = position + 1
+            )
+        } catch (e: Throwable) {
+            networkState.postValue(RepositoryApiStatus.ERROR)
+            Log.e(RepositoryPagingSource::class.java.simpleName, "Error retrieving repositories: $e")
+            return LoadResult.Error(e)
+        }
+    }
+
+    /*
     override fun loadInitial(
         params: LoadInitialParams<Int>,
         callback: LoadInitialCallback<Int, Repository>
@@ -68,17 +101,39 @@ class RepositoryDataSource(
             callback(repositories)
         }
     }
+     */
+
+    private suspend fun executeQuery(page: Int, perPage: Int): List<Repository> {
+        networkState.postValue(RepositoryApiStatus.LOADING)
+        var repositories = emptyList<Repository>()
+        //scope.launch(getJobErrorHandler() + supervisorJob) {
+        repositories =
+            if (query.isNullOrBlank()) {
+                // We are not performing a search
+                service.getRepositories(
+                    user = user,
+                    page = page,
+                    per_page = perPage
+                )
+            } else {
+                // We are performing a search
+                service.getRepositoriesQuery(
+                    query = "$query+user:$user",
+                    page = page,
+                    per_page = perPage
+                ).items
+            }
+
+        retryQuery = null
+        networkState.postValue(RepositoryApiStatus.DONE)
+        //}
+        return repositories
+    }
 
     private fun getJobErrorHandler() = CoroutineExceptionHandler { _, e ->
-        Log.e(RepositoryDataSource::class.java.simpleName, "Error retrieving repositories: $e")
+        Log.e(RepositoryPagingSource::class.java.simpleName, "Error retrieving repositories: $e")
         networkState.postValue(RepositoryApiStatus.ERROR)
     }
-
-    override fun invalidate() {
-        super.invalidate()
-        supervisorJob.cancelChildren() // Cancel possible running job to only keep last result
-    }
-
 
     // Public APIs
     fun getNetworkState(): LiveData<RepositoryApiStatus> =

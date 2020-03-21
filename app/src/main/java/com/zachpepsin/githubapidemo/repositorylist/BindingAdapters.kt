@@ -11,7 +11,7 @@ import com.zachpepsin.githubapidemo.network.Repository
 
 @BindingAdapter("listData")
 fun bindRecyclerView(recyclerView: RecyclerView, data: PagedList<Repository>?) {
-    val adapter = recyclerView.adapter as RepositoryListAdapter
+    val adapter = recyclerView.adapter as RepositoryDataAdapter
     adapter.submitList(data)
 }
 

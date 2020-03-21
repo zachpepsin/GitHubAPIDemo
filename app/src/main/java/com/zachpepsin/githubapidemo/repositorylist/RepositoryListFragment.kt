@@ -72,7 +72,7 @@ class RepositoryListFragment : Fragment(), OnSharedPreferenceChangeListener {
 
         // Sets the adapter of the Repository RecyclerView with clickHandler lambda that
         // tells the viewModel when our repository is clicked
-        val repositoryListAdapter = RepositoryListAdapter(RepositoryItemListener { repository ->
+        val repositoryListAdapter = RepositoryDataAdapter(RepositoryItemListener { repository ->
             viewModel.displayRepositoryDetails(repository)
         })
 

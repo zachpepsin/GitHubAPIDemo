@@ -7,9 +7,6 @@ import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.zachpepsin.githubapidemo.network.Repository
 import com.zachpepsin.githubapidemo.network.RepositoryApi
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 
 enum class RepositoryApiStatus { LOADING, ERROR, DONE }
 
@@ -55,12 +52,6 @@ class RepositoryListViewModel(
         _eventDisplaySearchDialog.value = true
     }
 
-    // Create a Coroutine scope using a job to be able to cancel when needed
-    private var viewModelJob = Job()
-
-    // the Coroutine runs using the Main (UI) dispatcher
-    private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
-
     /**
      * Call getRepositories() on init so we can display status immediately.
      */
@@ -71,7 +62,6 @@ class RepositoryListViewModel(
             .build()
 
         repositoryDataSource = RepositoryDataSourceFactory(
-            scope = coroutineScope,
             service = RepositoryApi.retrofitService,
             user = user,
             query = null // Do not perform a search on first load
@@ -81,15 +71,6 @@ class RepositoryListViewModel(
             LivePagedListBuilder<Int, Repository>(repositoryDataSource, config)
 
         _repositories = initializedPagedListBuilder.build()
-    }
-
-    /**
-     * When the [ViewModel] is finished, we cancel our coroutine [viewModelJob], which tells the
-     * Retrofit service to stop.
-     */
-    override fun onCleared() {
-        super.onCleared()
-        viewModelJob.cancel()
     }
 
     /**

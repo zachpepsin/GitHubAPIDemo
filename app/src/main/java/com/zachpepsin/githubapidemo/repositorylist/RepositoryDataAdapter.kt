@@ -2,14 +2,14 @@ package com.zachpepsin.githubapidemo.repositorylist
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.paging.PagedListAdapter
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.zachpepsin.githubapidemo.databinding.RepositoryListItemBinding
 import com.zachpepsin.githubapidemo.network.Repository
 
-class RepositoryListAdapter(private val onClickListener: RepositoryItemListener) :
-    PagedListAdapter<Repository, RepositoryListAdapter.RepositoryViewHolder>(DiffCallback) {
+class RepositoryDataAdapter(private val onClickListener: RepositoryItemListener) :
+    PagingDataAdapter<Repository, RepositoryDataAdapter.RepositoryViewHolder>(DiffCallback) {
 
     /**
      * Create new [RecyclerView] item views (invoked by the layout manager)
