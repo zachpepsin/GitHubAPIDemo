@@ -8,7 +8,6 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.zachpepsin.githubapidemo.network.Repository
 import com.zachpepsin.githubapidemo.network.RepositoryApi
-import kotlinx.coroutines.Dispatchers
 
 enum class RepositoryApiStatus { LOADING, ERROR, DONE }
 
@@ -19,7 +18,7 @@ class RepositoryListViewModel(
     user: String
 ) : ViewModel() {
 
-    private var repositoryDataSource: RepositoryDataSourceFactory
+    private var repositoryPagingSource: RepositoryPagingSource
 
     // The internal MutableLiveData that stores the status of the most recent request
     private val _status = MutableLiveData<RepositoryApiStatus>()
@@ -63,7 +62,7 @@ class RepositoryListViewModel(
             enablePlaceholders = false
         )
 
-        repositoryDataSource = RepositoryDataSourceFactory(
+        repositoryPagingSource = RepositoryPagingSource(
             service = RepositoryApi.retrofitService,
             user = user,
             query = null // Do not perform a search on first load
@@ -72,7 +71,7 @@ class RepositoryListViewModel(
         _repositories = LivePagingData(
             config,
             null,
-            repositoryDataSource.asPagingSourceFactory(Dispatchers.IO)
+            { repositoryPagingSource }
         )
     }
 
@@ -104,7 +103,10 @@ class RepositoryListViewModel(
      * @param query the query string to search for
      */
     fun updateQuery(query: String?) {
-        repositoryDataSource.updateQuery(query)
+        repositoryPagingSource.query = query
+        //repositoryPagingSource.refresh // TODO do we need to refresh?
+
+        //repositoryDataSource.updateQuery(query)
     }
 
 
@@ -114,6 +116,9 @@ class RepositoryListViewModel(
      * @param user the username to query repos from
      */
     fun updateUser(user: String) {
-        repositoryDataSource.updateUser(user)
+        repositoryPagingSource.user = user
+        //repositoryPagingSource.refresh // TODO do we need to refresh?
+
+        //repositoryDataSource.updateUser(user)
     }
 }

@@ -4,15 +4,14 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingSource
-import androidx.paging.PagingState
 import com.zachpepsin.githubapidemo.network.Repository
 import com.zachpepsin.githubapidemo.network.RepositoryApiService
 import kotlinx.coroutines.CoroutineExceptionHandler
 
 class RepositoryPagingSource(
     private val service: RepositoryApiService,
-    private val user: String,
-    private val query: String?
+    var user: String,
+    var query: String?
 ) : PagingSource<Int, Repository>() {
 
     private val networkState = MutableLiveData<RepositoryApiStatus>()
@@ -49,7 +48,10 @@ class RepositoryPagingSource(
             )
         } catch (e: Throwable) {
             networkState.postValue(RepositoryApiStatus.ERROR)
-            Log.e(RepositoryPagingSource::class.java.simpleName, "Error retrieving repositories: $e")
+            Log.e(
+                RepositoryPagingSource::class.java.simpleName,
+                "Error retrieving repositories: $e"
+            )
             return LoadResult.Error(e)
         }
     }

@@ -2,6 +2,7 @@ package com.zachpepsin.githubapidemo.repositorylist
 
 import androidx.databinding.BindingAdapter
 import androidx.paging.PagedList
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.RecyclerView
 import com.zachpepsin.githubapidemo.network.Repository
 
@@ -10,8 +11,8 @@ import com.zachpepsin.githubapidemo.network.Repository
  */
 
 @BindingAdapter("listData")
-fun bindRecyclerView(recyclerView: RecyclerView, data: PagedList<Repository>?) {
+fun bindRecyclerView(recyclerView: RecyclerView, data: PagingData<Repository>?) {
     val adapter = recyclerView.adapter as RepositoryDataAdapter
-    adapter.submitList(data)
+    adapter.submitData(data)
 }
 
