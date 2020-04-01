@@ -96,6 +96,11 @@ class RepositoryListFragment : Fragment(), OnSharedPreferenceChangeListener {
             })
         }
 
+        viewModel.repositories.observe(viewLifecycleOwner, Observer { pagingData ->
+            repositoryListAdapter.submitData(lifecycle, pagingData)
+        })
+
+
         // Observe the eventDisplayStateDialog LiveData and display the dialog when it is true
         // After navigating, call displayStateDialogComplete() so that the ViewModel is ready
         // for another state dialog event.

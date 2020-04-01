@@ -37,8 +37,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:listData="@{viewModel.repositories}"
                 tools:listitem="@layout/repository_list_item" />
+            <!--app:listData="@{viewModel.repositories}"-->
 
             <ImageView
                 android:id="@+id/image_status"
