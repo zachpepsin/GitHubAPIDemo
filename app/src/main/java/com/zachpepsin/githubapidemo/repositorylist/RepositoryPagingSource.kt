@@ -21,7 +21,7 @@ class RepositoryPagingSource(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Repository> {
         return try {
-            val position = params.key ?: 0
+            val position = params.key ?: 1
 
             val items = if (query.isNullOrBlank()) {
                 // We are not performing a search
