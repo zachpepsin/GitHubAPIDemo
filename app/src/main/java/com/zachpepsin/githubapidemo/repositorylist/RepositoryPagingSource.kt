@@ -43,7 +43,7 @@ class RepositoryPagingSource(
 
             LoadResult.Page(
                 data = items,
-                prevKey = position,
+                prevKey = null,
                 nextKey = position + 1
             )
         } catch (e: Throwable) {
